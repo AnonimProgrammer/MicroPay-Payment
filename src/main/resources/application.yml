@@ -1,0 +1,97 @@
+spring:
+  application:
+    name: micropay-payment
+
+  datasource:
+    url: jdbc:postgresql://localhost:5450/payment_db
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 8120
+
+rabbitmq:
+  exchange:
+    transaction: transaction.event
+    debit: wallet.debit.event
+    credit: wallet.credit.event
+    refund: wallet.refund.event
+    notification: notification.event
+  queue:
+    wallet:
+      debitFailed: wallet.debit.failed.queue
+      debited: wallet.debited.queue
+      creditFailed: wallet.credit.failed.queue
+      credited: wallet.credited.queue
+      refunded: wallet.refunded.queue
+    transaction:
+      created: transaction.created.queue
+
+  routing-key:
+    wallet:
+      debit: wallet.debit
+      credit: wallet.credit
+      refund: wallet.refund
+    transaction:
+      initiate: transaction.initiate
+      succeeded: transaction.succeeded
+      failed: transaction.failed
+    notification:
+      success: notification.success
+      failure: notification.failure
+
+external_banking:
+  merchant_id: MERCHANT12345
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, circuitbreakers, metrics, prometheus
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 15s
+        failure-rate-threshold: 50
+        event-consumer-buffer-size: 10
