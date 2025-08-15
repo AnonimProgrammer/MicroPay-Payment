@@ -11,18 +11,15 @@ import com.docker.payment.model.payment.CardDetails;
 import com.docker.payment.model.transaction.TransactionType;
 import com.docker.payment.service.external.WalletCardClient;
 import com.docker.payment.service.processor.PaymentProcessor;
-import com.docker.payment.service.processor.top_up.CardToWalletProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class WalletToCardProcessor implements PaymentProcessor {
 
     private final WalletCardClient walletCardClient;
-    private final static Logger logger = LoggerFactory.getLogger(CardToWalletProcessor.class);
+    private final static Logger logger = LoggerFactory.getLogger(WalletToCardProcessor.class);
 
     public WalletToCardProcessor(WalletCardClient walletCardClient) {
         this.walletCardClient = walletCardClient;
