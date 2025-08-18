@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 public class PaymentRequest {
 
     @NotNull(message = "Amount must not be null")
+    @Digits(integer = 5, fraction = 2,
+            message = "Amount must be a valid monetary value with up to 5 digits before the decimal point and up to 2 decimal places")
     @DecimalMin(value = "0.01", message = "Amount must be at least 0.01")
     private BigDecimal amount;
 
