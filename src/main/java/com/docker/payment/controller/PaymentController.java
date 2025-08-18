@@ -32,6 +32,10 @@ public class PaymentController {
     }
 
     @PostMapping("/transfer")
-    public void transfer() {}
+    public ResponseEntity<PaymentResponse> transfer(@RequestBody @Valid PaymentRequest paymentRequest) {
+        PaymentResponse paymentResponse = paymentCoordinatorService
+                .handleTransferRequest(paymentRequest);
+        return ResponseEntity.ok(paymentResponse);
+    }
 
 }
