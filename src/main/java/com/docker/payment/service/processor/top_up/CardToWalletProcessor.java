@@ -5,17 +5,15 @@ import com.docker.payment.dto.payment.external.BankApiError;
 import com.docker.payment.dto.payment.external.BankApiResponse;
 import com.docker.payment.dto.payment.internal.PaymentRequest;
 import com.docker.payment.dto.payment.external.CardWithdrawalRequest;
-import com.docker.payment.exception.InvalidPaymentRequestException;
 import com.docker.payment.exception.PaymentProviderException;
 import com.docker.payment.model.payment.CardDetails;
 import com.docker.payment.model.transaction.TransactionType;
+import com.docker.payment.service.PaymentValidator;
 import com.docker.payment.service.external.WalletCardClient;
 import com.docker.payment.service.processor.PaymentProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class CardToWalletProcessor implements PaymentProcessor {
@@ -30,9 +28,11 @@ public class CardToWalletProcessor implements PaymentProcessor {
     @Override
     public void processPayment(PaymentRequest paymentRequest) {
         logger.info("[CardToWalletProcessor] - Processing Payment Request.");
+
         CardDetails cardDetails = (CardDetails) paymentRequest.getPaymentDetails();
-        validateCardDetails(cardDetails);
-        logger.info("[CardToWalletProcessor] - Card Details validation completed successfully.");
+        validatePaymentRequest(paymentRequest, cardDetails);
+
+        logger.info("[CardToWalletProcessor] - Payment Request validation completed successfully.");
 
         CardWithdrawalRequest cardWithdrawalRequest = new CardWithdrawalRequest.Builder()
                 .setMerchantId(BankingConfiguration.getMerchantId())
@@ -57,11 +57,11 @@ public class CardToWalletProcessor implements PaymentProcessor {
         }
     }
 
-    private void validateCardDetails(CardDetails cardDetails) {
-        if (cardDetails.getNumber() == null || cardDetails.getExpirationMonth() == null ||
-            cardDetails.getExpirationYear() == null || cardDetails.getCvv() == null) {
-            logger.error("[CardToWalletProcessor] - Invalid Card Details.");
-            throw new InvalidPaymentRequestException("Invalid card details provided.");
-        }
+    private void validatePaymentRequest(PaymentRequest request, CardDetails cardDetails) {
+        PaymentValidator.validateCardNumber(request.getSource());
+        PaymentValidator.validateWalletId(request.getDestination());
+
+        PaymentValidator.validateCardDetails(cardDetails);
     }
+
 }

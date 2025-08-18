@@ -1,6 +1,6 @@
 package com.docker.payment.model.payment;
 
-public class CardDetails implements PaymentDetails{
+public class CardDetails implements PaymentDetails {
     private String number;
     private String cvv;
     private String expirationMonth;
