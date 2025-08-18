@@ -57,4 +57,20 @@ public class PaymentCoordinatorService {
 
         return DtoBuilder.buildPaymentResponse(payment);
     }
+
+    public PaymentResponse handleTransferRequest(PaymentRequest paymentRequest) {
+        if (paymentRequest.getType().compareTo(TransactionType.TRANSFER) != 0) {
+            throw new InvalidPaymentRequestException("Invalid transaction type for transfer: " + paymentRequest.getType());
+        }
+        PaymentValidator.validateWalletId(paymentRequest.getSource());
+        PaymentValidator.validateWalletId(paymentRequest.getDestination());
+
+        PaymentModel payment = paymentDataAccessService.savePayment(paymentRequest);
+
+        InitiateTransactionEvent initiateTransactionEvent = DtoBuilder.buildInitiateTransactionEvent(payment);
+        transactionMessagePublisher.publishInitiateTransactionEvent(initiateTransactionEvent);
+
+        return DtoBuilder.buildPaymentResponse(payment);
+    }
+
 }
