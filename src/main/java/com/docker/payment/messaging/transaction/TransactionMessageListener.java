@@ -20,6 +20,6 @@ public class TransactionMessageListener {
     @RabbitListener(queues = "${rabbitmq.queue.transaction.created}")
     public void listenToTransactionCreatedEvent(TransactionCreatedEvent transactionCreatedEvent) {
         logger.info("[TransactionMessageListener] - Listening to TransactionCreatedEvent: {}", transactionCreatedEvent);
-//        paymentCoordinatorService.handleTransactionCreatedEvent(transactionCreatedEvent);
+        paymentCoordinatorService.handleTransactionCreatedEvent(transactionCreatedEvent);
     }
 }
