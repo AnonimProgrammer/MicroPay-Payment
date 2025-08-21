@@ -3,8 +3,12 @@ package com.docker.payment.service;
 import com.docker.payment.dto.payment.internal.PaymentRequest;
 import com.docker.payment.dto.payment.internal.PaymentResponse;
 import com.docker.payment.dto.transaction.InitiateTransactionEvent;
+import com.docker.payment.dto.transaction.TransactionCreatedEvent;
+import com.docker.payment.dto.wallet.credit.CreditWalletEvent;
+import com.docker.payment.dto.wallet.debit.DebitWalletEvent;
 import com.docker.payment.exception.InvalidPaymentRequestException;
 import com.docker.payment.messaging.transaction.TransactionMessagePublisher;
+import com.docker.payment.messaging.wallet.WalletMessagePublisher;
 import com.docker.payment.model.payment.PaymentModel;
 import com.docker.payment.model.transaction.TransactionType;
 import com.docker.payment.service.processor.PaymentProcessor;
@@ -20,15 +24,17 @@ public class PaymentCoordinatorService {
     private final TopUpProcessorService topUpProcessorService;
     private final PaymentDataAccessService paymentDataAccessService;
     private final TransactionMessagePublisher transactionMessagePublisher;
+    private final WalletMessagePublisher walletMessagePublisher;
 
     public PaymentCoordinatorService(WithdrawalProcessorService withdrawalProcessorService,
                                      TopUpProcessorService topUpProcessorService,
                                      PaymentDataAccessService paymentDataAccessService,
-                                     TransactionMessagePublisher transactionMessagePublisher) {
+                                     TransactionMessagePublisher transactionMessagePublisher, WalletMessagePublisher walletMessagePublisher) {
         this.withdrawalProcessorService = withdrawalProcessorService;
         this.topUpProcessorService = topUpProcessorService;
         this.paymentDataAccessService = paymentDataAccessService;
         this.transactionMessagePublisher = transactionMessagePublisher;
+        this.walletMessagePublisher = walletMessagePublisher;
     }
 
     public PaymentResponse handleTopUpRequest(PaymentRequest paymentRequest) {
@@ -71,6 +77,20 @@ public class PaymentCoordinatorService {
         transactionMessagePublisher.publishInitiateTransactionEvent(initiateTransactionEvent);
 
         return DtoBuilder.buildPaymentResponse(payment);
+    }
+
+    public void handleTransactionCreatedEvent(TransactionCreatedEvent transactionCreatedEvent) {
+        PaymentModel payment = paymentDataAccessService.updatePaymentWithTransactionId(
+                transactionCreatedEvent.getPaymentId(),
+                transactionCreatedEvent.getTransactionId()
+        );
+        if (payment.getType().compareTo(TransactionType.TOP_UP) == 0) {
+            CreditWalletEvent creditWalletEvent = DtoBuilder.buildCreditWalletEvent(payment);
+            walletMessagePublisher.publishCreditWalletEvent(creditWalletEvent);
+            return;
+        }
+        DebitWalletEvent debitWalletEvent = DtoBuilder.buildDebitWalletEvent(payment);
+        walletMessagePublisher.publishDebitWalletEvent(debitWalletEvent);
     }
 
 }
