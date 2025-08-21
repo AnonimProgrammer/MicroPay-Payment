@@ -1,12 +1,15 @@
 package com.docker.payment.service;
 
 import com.docker.payment.dto.payment.internal.PaymentRequest;
+import com.docker.payment.exception.PaymentNotFoundException;
 import com.docker.payment.model.payment.PaymentModel;
 import com.docker.payment.model.payment.PaymentStatus;
 import com.docker.payment.model.payment.entity.Payment;
 import com.docker.payment.repo.PaymentRepository;
 import com.docker.payment.util.PaymentMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class PaymentDataAccessService {
@@ -32,4 +35,16 @@ public class PaymentDataAccessService {
         Payment savedPayment = paymentRepository.save(payment);
         return paymentMapper.toModel(savedPayment);
     }
+
+    public PaymentModel updatePaymentWithTransactionId(Long id, UUID transactionId) {
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found for ID: " + id));
+
+        payment.setTransactionId(transactionId);
+        payment.setStatus(PaymentStatus.PROCESSING);
+
+        paymentRepository.save(payment);
+        return paymentMapper.toModel(payment);
+    }
+
 }
