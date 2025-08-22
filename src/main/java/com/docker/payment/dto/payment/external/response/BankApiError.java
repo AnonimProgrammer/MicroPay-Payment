@@ -1,4 +1,4 @@
-package com.docker.payment.dto.payment.external;
+package com.docker.payment.dto.payment.external.response;
 
 public class BankApiError {
     private String errorCode;

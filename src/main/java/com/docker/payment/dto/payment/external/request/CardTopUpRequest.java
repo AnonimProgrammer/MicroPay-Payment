@@ -1,11 +1,11 @@
-package com.docker.payment.dto.payment.external;
+package com.docker.payment.dto.payment.external.request;
 
 import com.docker.payment.model.transaction.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class CardWithdrawalRequest {
+public class CardTopUpRequest {
     private String merchantId;
     private BigDecimal amount;
     private String currency;
@@ -14,7 +14,7 @@ public class CardWithdrawalRequest {
     private String description;
     private LocalDateTime timestamp;
 
-    private CardWithdrawalRequest(Builder builder) {
+    private CardTopUpRequest(Builder builder) {
         this.merchantId = builder.merchantId;
         this.amount = builder.amount;
         this.currency = builder.currency;
@@ -26,48 +26,10 @@ public class CardWithdrawalRequest {
 
     public static class Recipient {
         private String cardNumber;
-        private String cardExpiryMonth;
-        private String cardExpiryYear;
-        private String cvv;
 
-        private Recipient(RecipientBuilder builder) {
-            this.cardNumber = builder.cardNumber;
-            this.cardExpiryMonth = builder.cardExpiryMonth;
-            this.cardExpiryYear = builder.cardExpiryYear;
-            this.cvv = builder.cvv;
+        public Recipient(String cardNumber) {
+            this.cardNumber = cardNumber;
         }
-
-        public static class RecipientBuilder {
-            private String cardNumber;
-            private String cardExpiryMonth;
-            private String cardExpiryYear;
-            private String cvv;
-
-            public RecipientBuilder setCardNumber(String cardNumber) {
-                this.cardNumber = cardNumber;
-                return this;
-            }
-
-            public RecipientBuilder setCardExpiryMonth(String cardExpiryMonth) {
-                this.cardExpiryMonth = cardExpiryMonth;
-                return this;
-            }
-
-            public RecipientBuilder setCardExpiryYear(String cardExpiryYear) {
-                this.cardExpiryYear = cardExpiryYear;
-                return this;
-            }
-
-            public RecipientBuilder setCvv(String cvv) {
-                this.cvv = cvv;
-                return this;
-            }
-
-            public Recipient build() {
-                return new Recipient(this);
-            }
-        }
-
     }
 
     public static class Builder {
@@ -114,8 +76,8 @@ public class CardWithdrawalRequest {
             return this;
         }
 
-        public CardWithdrawalRequest build() {
-            return new CardWithdrawalRequest(this);
+        public CardTopUpRequest build() {
+            return new CardTopUpRequest(this);
         }
     }
 
@@ -168,4 +130,5 @@ public class CardWithdrawalRequest {
     }
 
 }
+
 
