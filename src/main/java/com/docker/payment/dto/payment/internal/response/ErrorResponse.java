@@ -1,11 +1,11 @@
-package com.docker.payment.dto.payment;
+package com.docker.payment.dto.payment.internal.response;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ErrorResponse {
-    private int status;
+    private Integer status;
     private String message;
     private LocalDateTime timestamp;
     private final static Map<String, Integer> statusMap = new HashMap<>(
@@ -17,7 +17,7 @@ public class ErrorResponse {
     );
 
     public ErrorResponse() {}
-    public ErrorResponse(int status, String message, LocalDateTime timestamp) {
+    public ErrorResponse(Integer status, String message, LocalDateTime timestamp) {
         this.status = status;
         this.message = message;
         this.timestamp = timestamp;
@@ -27,10 +27,10 @@ public class ErrorResponse {
         return statusMap.get(errorCode);
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
     public String getMessage() {

@@ -1,4 +1,4 @@
-package com.docker.payment.dto.payment.internal;
+package com.docker.payment.dto.payment.internal.response;
 
 import com.docker.payment.model.payment.PaymentStatus;
 import com.docker.payment.model.transaction.EndpointType;
