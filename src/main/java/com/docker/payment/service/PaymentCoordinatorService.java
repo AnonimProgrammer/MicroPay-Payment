@@ -1,11 +1,12 @@
 package com.docker.payment.service;
 
-import com.docker.payment.dto.payment.internal.PaymentRequest;
-import com.docker.payment.dto.payment.internal.PaymentResponse;
+import com.docker.payment.dto.payment.internal.request.PaymentRequest;
+import com.docker.payment.dto.payment.internal.response.PaymentResponse;
 import com.docker.payment.dto.transaction.InitiateTransactionEvent;
 import com.docker.payment.dto.transaction.TransactionCreatedEvent;
 import com.docker.payment.dto.wallet.credit.CreditWalletEvent;
 import com.docker.payment.dto.wallet.debit.DebitWalletEvent;
+import com.docker.payment.dto.wallet.debit.WalletDebitedEvent;
 import com.docker.payment.exception.InvalidPaymentRequestException;
 import com.docker.payment.messaging.transaction.TransactionMessagePublisher;
 import com.docker.payment.messaging.wallet.WalletMessagePublisher;
@@ -37,7 +38,7 @@ public class PaymentCoordinatorService {
         this.walletMessagePublisher = walletMessagePublisher;
     }
 
-    public PaymentResponse handleTopUpRequest(PaymentRequest paymentRequest) {
+    public PaymentResponse processTopUpRequest(PaymentRequest paymentRequest) {
         if (paymentRequest.getType().compareTo(TransactionType.TOP_UP) != 0) {
             throw new InvalidPaymentRequestException("Invalid transaction type for top-up: " + paymentRequest.getType());
         }
@@ -52,7 +53,7 @@ public class PaymentCoordinatorService {
         return DtoBuilder.buildPaymentResponse(payment);
     }
 
-    public PaymentResponse handleWithdrawalRequest(PaymentRequest paymentRequest) {
+    public PaymentResponse processWithdrawalRequest(PaymentRequest paymentRequest) {
         if (paymentRequest.getType().compareTo(TransactionType.WITHDRAWAL) != 0) {
             throw new InvalidPaymentRequestException("Invalid transaction type for withdrawal: " + paymentRequest.getType());
         }
@@ -64,7 +65,7 @@ public class PaymentCoordinatorService {
         return DtoBuilder.buildPaymentResponse(payment);
     }
 
-    public PaymentResponse handleTransferRequest(PaymentRequest paymentRequest) {
+    public PaymentResponse processTransferRequest(PaymentRequest paymentRequest) {
         if (paymentRequest.getType().compareTo(TransactionType.TRANSFER) != 0) {
             throw new InvalidPaymentRequestException("Invalid transaction type for transfer: " + paymentRequest.getType());
         }
@@ -93,4 +94,7 @@ public class PaymentCoordinatorService {
         walletMessagePublisher.publishDebitWalletEvent(debitWalletEvent);
     }
 
+    public void handleWalletDebitedEvent(WalletDebitedEvent walletDebitedEvent) {
+
+    }
 }
