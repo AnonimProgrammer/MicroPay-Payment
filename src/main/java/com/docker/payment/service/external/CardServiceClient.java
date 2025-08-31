@@ -1,6 +1,10 @@
 package com.docker.payment.service.external;
 
-import com.docker.payment.dto.payment.external.*;
+import com.docker.payment.dto.payment.external.request.CardTopUpRequest;
+import com.docker.payment.dto.payment.external.request.CardWithdrawalRequest;
+import com.docker.payment.dto.payment.external.response.BankApiError;
+import com.docker.payment.dto.payment.external.response.BankApiResponse;
+import com.docker.payment.dto.payment.external.response.CardOperationResponse;
 import com.docker.payment.exception.PaymentProviderException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
@@ -11,9 +15,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
-public class WalletCardClient {
+public class CardServiceClient {
 
-    private final static Logger logger = LoggerFactory.getLogger(WalletCardClient.class);
+    private final static Logger logger = LoggerFactory.getLogger(CardServiceClient.class);
 
     @CircuitBreaker(name = "withdrawCard", fallbackMethod = "fallbackWithdrawCard")
     public BankApiResponse withdrawCard(CardWithdrawalRequest cardWithdrawalRequest) {
