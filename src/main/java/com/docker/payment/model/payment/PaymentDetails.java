@@ -1,5 +1,6 @@
 package com.docker.payment.model.payment;
 
+import com.docker.payment.model.wallet.WalletDetails;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 

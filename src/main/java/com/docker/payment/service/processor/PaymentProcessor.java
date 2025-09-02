@@ -1,6 +1,6 @@
 package com.docker.payment.service.processor;
 
-import com.docker.payment.dto.payment.internal.PaymentRequest;
+import com.docker.payment.dto.payment.internal.request.PaymentRequest;
 
 public interface PaymentProcessor {
 
