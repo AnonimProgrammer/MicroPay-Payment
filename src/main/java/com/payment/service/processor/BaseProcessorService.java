@@ -1,12 +1,12 @@
-package com.docker.payment.service.processor;
+package com.payment.service.processor;
 
-import com.docker.payment.dto.payment.internal.PaymentRequest;
-import com.docker.payment.exception.PaymentProcessorNotFoundException;
-import com.docker.payment.model.payment.PaymentKey;
+import com.payment.dto.payment.internal.request.PaymentRequest;
+import com.payment.exception.PaymentProcessorNotFoundException;
+import com.payment.model.payment.PaymentKey;
 
 import java.util.Map;
 
-public abstract class PaymentProcessorService {
+public abstract class BaseProcessorService {
 
     public PaymentProcessor getPaymentProcessor(PaymentRequest paymentRequest,
                                                 Map<PaymentKey, PaymentProcessor> registry) {
@@ -21,4 +21,5 @@ public abstract class PaymentProcessorService {
         }
         return processor;
     }
+
 }
