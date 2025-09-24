@@ -1,0 +1,28 @@
+package com.micropay.payment.dto.wallet.credit;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class WalletCreditedEvent {
+
+    private Long paymentId;
+    private Long walletId;
+    private Long userId;
+    private BigDecimal amount;
+
+    @Override
+    public String toString() {
+        return "WalletCreditedEvent {" +
+                "paymentId = " + paymentId +
+                ", walletId = " + walletId +
+                ", userId = " + userId +
+                ", amount = " + amount +
+                '}';
+    }
+}

@@ -30,36 +30,6 @@ spring:
 server:
   port: 8120
 
-rabbitmq:
-  exchange:
-    transaction: transaction.event
-    debit: wallet.debit.event
-    credit: wallet.credit.event
-    refund: wallet.refund.event
-    notification: notification.event
-  queue:
-    wallet:
-      debitFailed: wallet.debit.failed.queue
-      debited: wallet.debited.queue
-      creditFailed: wallet.credit.failed.queue
-      credited: wallet.credited.queue
-      refunded: wallet.refunded.queue
-    transaction:
-      created: transaction.created.queue
-
-  routing-key:
-    wallet:
-      debit: wallet.debit
-      credit: wallet.credit
-      refund: wallet.refund
-    transaction:
-      initiate: transaction.initiate
-      succeeded: transaction.succeeded
-      failed: transaction.failed
-    notification:
-      success: notification.success
-      failure: notification.failure
-
 external_banking:
   merchant_id: MERCHANT12345
 
