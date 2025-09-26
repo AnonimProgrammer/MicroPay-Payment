@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class FailureNotificationEvent {
 
     private Long walletId;
-    private Long userId;
     private String title;
     private String content;
 
@@ -18,7 +17,6 @@ public class FailureNotificationEvent {
     public String toString() {
         return "FailureNotificationEvent{" +
                 "walletId=" + walletId +
-                ", userId=" + userId +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 '}';
