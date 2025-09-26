@@ -30,9 +30,7 @@ public class TransferProcessorService {
         validateTransferRequest(paymentRequest);
 
         PaymentModel payment = paymentDataAccessService.savePayment(paymentRequest);
-        walletServiceAdapter.reserveBalance(
-                Long.valueOf(payment.getSource()),
-                new ReservationRequest(payment.getId(), payment.getAmount()));
+        reserveBalance(payment);
 
         InitiateTransactionEvent initiateTransactionEvent = transactionEventFactory.createInitiateTransactionEvent(payment);
         transactionMessagePublisher.publishInitiateTransactionEvent(initiateTransactionEvent);
@@ -44,8 +42,16 @@ public class TransferProcessorService {
         PaymentValidator.validateTransactionType(paymentRequest, TransactionType.TRANSFER);
         PaymentValidator.validateWalletId(paymentRequest.getSource());
         PaymentValidator.validateWalletId(paymentRequest.getDestination());
+
         if (paymentRequest.getSource().equals(paymentRequest.getDestination())) {
-            throw new InvalidPaymentRequestException("Identical source and destination wallet IDs are not allowed for transfer payments.");
+            throw new InvalidPaymentRequestException
+                    ("Identical source and destination wallet IDs are not allowed for transfer payments.");
         }
+    }
+
+    private void reserveBalance(PaymentModel payment) {
+        walletServiceAdapter.reserveBalance(
+                Long.valueOf(payment.getSource()),
+                new ReservationRequest(payment.getId(), payment.getAmount()));
     }
 }
