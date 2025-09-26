@@ -13,7 +13,6 @@ public class WalletRefundedEvent {
 
     private Long paymentId;
     private Long walletId;
-    private Long userId;
     private BigDecimal amount;
 
     @Override
@@ -21,7 +20,6 @@ public class WalletRefundedEvent {
         return "WalletRefundedEvent {" +
                 "paymentId = " + paymentId +
                 ", walletId = " + walletId +
-                ", userId = " + userId +
                 ", amount = " + amount +
                 '}';
     }

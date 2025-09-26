@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -13,7 +14,6 @@ public class WalletCreditedEvent {
 
     private Long paymentId;
     private Long walletId;
-    private Long userId;
     private BigDecimal amount;
 
     @Override
@@ -21,7 +21,6 @@ public class WalletCreditedEvent {
         return "WalletCreditedEvent {" +
                 "paymentId = " + paymentId +
                 ", walletId = " + walletId +
-                ", userId = " + userId +
                 ", amount = " + amount +
                 '}';
     }

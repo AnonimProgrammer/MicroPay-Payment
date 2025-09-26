@@ -11,7 +11,6 @@ public class WalletDebitFailedEvent {
 
     private Long paymentId;
     private Long walletId;
-    private Long userId;
     private String failureReason;
 
     @Override
@@ -19,7 +18,6 @@ public class WalletDebitFailedEvent {
         return "WalletDebitFailedEvent{" +
                 "paymentId=" + paymentId +
                 ", walletId=" + walletId +
-                ", userId=" + userId +
                 ", failureReason='" + failureReason + '\'' +
                 '}';
     }
