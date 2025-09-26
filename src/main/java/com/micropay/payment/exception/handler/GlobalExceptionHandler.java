@@ -2,7 +2,6 @@ package com.micropay.payment.exception.handler;
 
 import com.micropay.payment.dto.payment.internal.response.ErrorResponse;
 import com.micropay.payment.exception.*;
-import com.payment.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;

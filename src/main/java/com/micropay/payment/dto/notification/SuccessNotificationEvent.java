@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class SuccessNotificationEvent {
 
     private Long walletId;
-    private Long userId;
     private String title;
     private String content;
 
@@ -18,7 +17,6 @@ public class SuccessNotificationEvent {
     public String toString() {
         return "SuccessNotificationEvent{" +
                 "walletId=" + walletId +
-                ", userId=" + userId +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 '}';

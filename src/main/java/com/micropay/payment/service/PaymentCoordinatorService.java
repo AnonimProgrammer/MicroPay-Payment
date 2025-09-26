@@ -1,5 +1,6 @@
 package com.micropay.payment.service;
 
+import com.micropay.payment.config.NotificationConstants;
 import com.micropay.payment.dto.notification.FailureNotificationEvent;
 import com.micropay.payment.dto.notification.SuccessNotificationEvent;
 import com.micropay.payment.dto.transaction.TransactionCreatedEvent;
@@ -69,9 +70,7 @@ public class PaymentCoordinatorService {
                 paymentDataAccessService
                         .updatePaymentStatus(payment.getId(), PaymentStatus.CREDITED, null);
 
-                TransactionSucceededEvent transactionSucceededEvent = transactionEventFactory
-                        .createTransactionSucceededEvent(payment);
-                transactionMessagePublisher.publishTransactionSucceededEvent(transactionSucceededEvent);
+                managePaymentFlowSuccess(payment, payment.getSource(), NotificationConstants.WALLET_DEBITED_MESSAGE);
 
                 paymentDataAccessService
                         .updatePaymentStatus(payment.getId(), PaymentStatus.COMPLETED, null);
@@ -79,13 +78,7 @@ public class PaymentCoordinatorService {
                 paymentDataAccessService
                         .updatePaymentStatus(payment.getId(), PaymentStatus.CREDIT_FAILED, exception.getMessage());
 
-                FailureNotificationEvent failureNotificationEvent = notificationEventFactory
-                        .createFailureNotificationEvent(payment, walletDebitedEvent.getUserId());
-                notificationMessagePublisher.publishFailureNotification(failureNotificationEvent);
-
-                TransactionFailedEvent transactionFailedEvent = transactionEventFactory
-                        .createTransactionFailedEvent(payment, exception.getMessage());
-                transactionMessagePublisher.publishTransactionFailedEvent(transactionFailedEvent);
+                managePaymentFlowFailure(payment, exception.getMessage(), payment.getSource());
 
                 RefundWalletEvent refundWalletEvent = walletEventFactory.createRefundWalletEvent(payment);
                 walletMessagePublisher.publishRefundWalletEvent(refundWalletEvent);
@@ -100,13 +93,7 @@ public class PaymentCoordinatorService {
         PaymentModel payment = paymentDataAccessService
                 .updatePaymentStatus(walletCreditedEvent.getPaymentId(), PaymentStatus.CREDITED, null);
 
-        TransactionSucceededEvent transactionSucceededEvent = transactionEventFactory
-                .createTransactionSucceededEvent(payment);
-        transactionMessagePublisher.publishTransactionSucceededEvent(transactionSucceededEvent);
-
-        SuccessNotificationEvent successNotificationEvent = notificationEventFactory
-                .createSuccessNotificationEvent(payment, walletCreditedEvent.getUserId());
-        notificationMessagePublisher.publishSuccessNotification(successNotificationEvent);
+        managePaymentFlowSuccess(payment, payment.getDestination(), NotificationConstants.WALLET_CREDITED_MESSAGE);
 
         paymentDataAccessService.updatePaymentStatus(payment.getId(), PaymentStatus.COMPLETED, null);
     }
@@ -116,13 +103,7 @@ public class PaymentCoordinatorService {
                 walletDebitFailedEvent.getPaymentId(),
                 PaymentStatus.DEBIT_FAILED, walletDebitFailedEvent.getFailureReason());
 
-        FailureNotificationEvent failureNotificationEvent = notificationEventFactory.createFailureNotificationEvent(
-                payment, walletDebitFailedEvent.getUserId());
-        notificationMessagePublisher.publishFailureNotification(failureNotificationEvent);
-
-        TransactionFailedEvent transactionFailedEvent = transactionEventFactory.createTransactionFailedEvent(
-                payment, walletDebitFailedEvent.getFailureReason());
-        transactionMessagePublisher.publishTransactionFailedEvent(transactionFailedEvent);
+        managePaymentFlowFailure(payment, walletDebitFailedEvent.getFailureReason(), payment.getSource());
     }
 
     public void handleWalletCreditFailedEvent(WalletCreditFailedEvent walletCreditFailedEvent) {
@@ -130,20 +111,17 @@ public class PaymentCoordinatorService {
                 walletCreditFailedEvent.getPaymentId(),
                 PaymentStatus.CREDIT_FAILED, walletCreditFailedEvent.getFailureReason());
 
-        TransactionFailedEvent transactionFailedEvent = transactionEventFactory.createTransactionFailedEvent(
-                payment, walletCreditFailedEvent.getFailureReason());
-        transactionMessagePublisher.publishTransactionFailedEvent(transactionFailedEvent);
-
         if (payment.getType().compareTo(TransactionType.TOP_UP) == 0) {
             refundProcessorService.processRefund(payment);
 
             paymentDataAccessService
                     .updatePaymentStatus(payment.getId(), PaymentStatus.REFUNDED, null);
+
+            managePaymentFlowFailure(payment, walletCreditFailedEvent.getFailureReason(), payment.getDestination());
             return;
         }
-        FailureNotificationEvent failureNotificationEvent = notificationEventFactory.createFailureNotificationEvent(
-                payment,  null);
-        notificationMessagePublisher.publishFailureNotification(failureNotificationEvent);
+
+        managePaymentFlowFailure(payment, walletCreditFailedEvent.getFailureReason(), payment.getSource());
 
         RefundWalletEvent refundWalletEvent = walletEventFactory.createRefundWalletEvent(payment);
         walletMessagePublisher.publishRefundWalletEvent(refundWalletEvent);
@@ -152,6 +130,26 @@ public class PaymentCoordinatorService {
     public void handleWalletRefundedEvent(WalletRefundedEvent walletRefundedEvent) {
         paymentDataAccessService.updatePaymentStatus(
                 walletRefundedEvent.getPaymentId(), PaymentStatus.REFUNDED, null);
+    }
+
+    private void managePaymentFlowFailure(PaymentModel payment, String failureReason, String subscriberId) {
+        FailureNotificationEvent failureNotificationEvent = notificationEventFactory
+                .createFailureNotificationEvent(payment, subscriberId);
+        notificationMessagePublisher.publishFailureNotification(failureNotificationEvent);
+
+        TransactionFailedEvent transactionFailedEvent = transactionEventFactory
+                .createTransactionFailedEvent(payment, failureReason);
+        transactionMessagePublisher.publishTransactionFailedEvent(transactionFailedEvent);
+    }
+
+    private void managePaymentFlowSuccess(PaymentModel payment, String subscriberId, String message) {
+        SuccessNotificationEvent successNotificationEvent = notificationEventFactory
+                .createSuccessNotificationEvent(payment, subscriberId, message);
+        notificationMessagePublisher.publishSuccessNotification(successNotificationEvent);
+
+        TransactionSucceededEvent transactionSucceededEvent = transactionEventFactory
+                .createTransactionSucceededEvent(payment);
+        transactionMessagePublisher.publishTransactionSucceededEvent(transactionSucceededEvent);
     }
 
 }

@@ -47,9 +47,7 @@ public class WithdrawalProcessorService extends BaseProcessorService {
         PaymentValidator.validateWalletId(paymentRequest.getSource());
 
         PaymentModel payment = paymentDataAccessService.savePayment(paymentRequest);
-        walletServiceAdapter.reserveBalance(
-                Long.valueOf(payment.getSource()),
-                new ReservationRequest(payment.getId(), payment.getAmount()));
+        reserveBalance(payment);
 
         InitiateTransactionEvent initiateTransactionEvent = transactionEventFactory.createInitiateTransactionEvent(payment);
         transactionMessagePublisher.publishInitiateTransactionEvent(initiateTransactionEvent);
@@ -63,5 +61,11 @@ public class WithdrawalProcessorService extends BaseProcessorService {
 
         PaymentProcessor paymentProcessor = getPaymentProcessor(paymentRequest, registry);
         paymentProcessor.processPayment(paymentRequest);
+    }
+
+    private void reserveBalance(PaymentModel payment) {
+        walletServiceAdapter.reserveBalance(
+                Long.valueOf(payment.getSource()),
+                new ReservationRequest(payment.getId(), payment.getAmount()));
     }
 }
