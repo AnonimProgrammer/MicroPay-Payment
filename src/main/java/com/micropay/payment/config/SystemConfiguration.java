@@ -20,7 +20,7 @@ import java.time.Duration;
 @EnableCaching
 public class SystemConfiguration {
 
-    public final static String WALLET_SERVICE_URL = "http://localhost:8110/v1/internal/wallets";
+    public final static String WALLET_SERVICE_URL = "http://wallet-service:8110/v1/internal/wallets";
 
     @Bean
     public ErrorDecoder walletErrorDecoder() {
