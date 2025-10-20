@@ -5,8 +5,7 @@ import com.micropay.payment.dto.payment.internal.response.ReservationResponse;
 import com.micropay.payment.exception.InternalServiceCommunicationException;
 import com.micropay.payment.exception.ReservationException;
 import com.micropay.payment.model.payment.PaymentStatus;
-import com.micropay.payment.service.PaymentDataAccessService;
-import com.micropay.payment.service.external.WalletClient;
+import com.micropay.payment.service.payment.PaymentDataAccessService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -23,19 +22,19 @@ public class WalletServiceAdapter {
 
     @CircuitBreaker(name = "reserveBalance", fallbackMethod = "reserveBalanceFallback")
     public void reserveBalance(Long walletId, ReservationRequest request) {
-        logger.info("[WalletServiceAdapter] - Reserving balance for walletId: {}, paymentId: {}, amount: {}",
-                walletId, request.getPaymentId(), request.getRequestedAmount());
+        logger.info("Reserving balance for walletId: {}, paymentId: {}, amount: {}",
+                walletId, request.paymentId(), request.requestedAmount());
         ReservationResponse response = walletClient.reserveBalance(walletId, request);
-        logger.info("[WalletServiceAdapter] - Reservation succeeded: {}", response);
+        logger.info("Reservation succeeded: {}", response);
     }
 
     public void reserveBalanceFallback(Long walletId, ReservationRequest request, Throwable throwable) {
         paymentDataAccessService
-                .updatePaymentStatus(request.getPaymentId(), PaymentStatus.FAILED, throwable.getMessage());
+                .updatePaymentStatus(request.paymentId(), PaymentStatus.FAILED, throwable.getMessage());
         if (throwable instanceof ReservationException) {
             throw (ReservationException) throwable;
         }
-        logger.info("[WalletServiceAdapter] - Fallback triggered for reserveBalance due to: {}", throwable.getMessage());
+        logger.info("Fallback triggered for reserveBalance due to: {}", throwable.getMessage());
         throw new InternalServiceCommunicationException("Wallet service is currently unavailable.", throwable);
     }
 }

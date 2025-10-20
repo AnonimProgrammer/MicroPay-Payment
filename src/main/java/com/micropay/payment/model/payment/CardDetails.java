@@ -11,13 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CardDetails implements PaymentDetails {
 
-    private String number;
     private String cvv;
     private String expirationMonth;
     private String expirationYear;
-
-    public CardDetails(String number) {
-        this.number = number;
-    }
 
 }

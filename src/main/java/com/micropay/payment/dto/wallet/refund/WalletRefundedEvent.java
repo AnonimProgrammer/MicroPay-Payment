@@ -1,26 +1,11 @@
 package com.micropay.payment.dto.wallet.refund;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
+import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class WalletRefundedEvent {
-
-    private Long paymentId;
-    private Long walletId;
-    private BigDecimal amount;
-
-    @Override
-    public String toString() {
-        return "WalletRefundedEvent {" +
-                "paymentId = " + paymentId +
-                ", walletId = " + walletId +
-                ", amount = " + amount +
-                '}';
-    }
-}
+public record WalletRefundedEvent (
+        UUID eventId,
+        Long paymentId,
+        Long walletId,
+        BigDecimal amount
+) {}
