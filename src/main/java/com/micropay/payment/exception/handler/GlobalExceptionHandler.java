@@ -25,6 +25,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
+    @ExceptionHandler(PaymentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlePaymentNotFoundException(PaymentNotFoundException exception) {
+        ErrorResponse body = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
     @ExceptionHandler(PaymentProviderException.class)
     public ResponseEntity<ErrorResponse> handlePaymentProviderException(PaymentProviderException exception) {
         ErrorResponse body = new ErrorResponse(
@@ -47,10 +57,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception exception) {
-
         ErrorResponse body = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "An unexpected error occurred",
+                "An unexpected error occurred. Please try again later.",
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);

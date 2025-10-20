@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-inbox
+      author: omarismailov
+      changes:
+        - createTable:
+            tableName: inbox
+            columns:
+              - column:
+                  name: event_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
