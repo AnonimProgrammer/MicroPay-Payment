@@ -44,7 +44,7 @@ public class PaymentDataAccessServiceImpl implements PaymentDataAccessService {
     @Override
     @Transactional
     public PaymentModel updatePaymentWithTransactionId(Long id, UUID transactionId) {
-        log.info("Updating payment with id: {}", transactionId);
+        log.info("Updating payment with id: {}", id);
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new PaymentNotFoundException("Payment not found for ID: " + id));
 
