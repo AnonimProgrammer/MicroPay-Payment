@@ -53,51 +53,39 @@ To ensure scalability and extensibility, the Payment Service uses the **Strategy
   - `TransferProcessorService`
   - `WithdrawalProcessorService`
 
-All implement:
-```java
-void processRequest(PaymentRequest request);
 Two of them (TopUpProcessorService, WithdrawalProcessorService) use a strategy registry:
-Map<PaymentKey, Processor> registry;
+```java
+Map<PaymentKey, PaymentProcessor> registry;
+```
 This allows automatic processor selection based on payment source and destination type.
 New payment types can be added by simply registering a new processor — no changes to existing code.
-🐇 Asynchronous Flow (Simplified)
-Payment Service initiates the transaction cycle.
-Coordinates processing and validation events.
-Updates wallet and transaction states asynchronously.
-Sends success/failure notifications at completion.
-🚀 Deployment
+## 🐇 Asynchronous Flow (Simplified)
+- Payment Service initiates the transaction cycle.
+- Coordinates processing and validation events.
+- Updates wallet and transaction states asynchronously.
+- Sends success/failure notifications at completion.
+## 🚀 Deployment
 All MicroPay services are:
-Built with Gradle
-Containerized using Docker
-Deployed and tested in Google Cloud Platform (GCP)
-Designed for Kubernetes orchestration
-🧰 Tech Stack
-Java 17
-Spring Boot
-RabbitMQ
-PostgreSQL
-Docker & Kubernetes
-Gradle
-JUnit & Mockito
-⚡ Quick Start (Local)
-# Clone repository
-git clone https://github.com/yourusername/MicroPay-Payment.git
-cd MicroPay-Payment
+- Built with Gradle
+- Containerized using Docker
+- Deployed and tested in Google Cloud Platform (GCP)
+- Designed for Kubernetes orchestration
+## 🧰 Tech Stack
+- Java 21
+- Spring Boot
+- RabbitMQ
+- PostgreSQL
+- Redis
+- Docker & Kubernetes
+- Gradle
+- JUnit & Mockito
+- Prometheus & Grafana(later)
 
-# Build
-./gradlew build
+---
 
-# Run (with environment variables)
-export RABBITMQ_HOST=localhost
-export POSTGRES_URL=jdbc:postgresql://localhost:5432/paymentdb
-export POSTGRES_USER=postgres
-export POSTGRES_PASSWORD=postgres
+<p align="center">
+  <b>Omar Ismailov</b><br>
+  <i>Software Engineer • Backend & System Design Enthusiast</i><br>
+  Building reliable systems with simplicity and architecture in mind.
+</p>
 
-./gradlew bootRun
-📖 Documentation
-Official system documentation is available in the main MicroPay Documentation Repository.
-🪪 License
-This project is licensed under the MIT License.
-💡 Author
-Omar Ismailov — Software Engineer | Backend & System Design Enthusiast
-Building reliable systems with simplicity and architecture in mind.
