@@ -1,4 +1,4 @@
-# 💳 MicroPay - Payment Service
+# MicroPay - Payment Service
 
 **MicroPay-Payment** is the **heart** of MicroPay’s transaction flow ecosystem — a distributed, event-driven **Wallet Application**.
 
@@ -6,7 +6,7 @@ It manages and coordinates all payment-related transactions through **Saga Orche
 
 ---
 
-## 🧩 System Context
+## System Context
 
 **MicroPay** consists of six independent microservices:
 
@@ -23,7 +23,7 @@ It manages and coordinates all payment-related transactions through **Saga Orche
 
 ---
 
-## ⚙️ Core Responsibilities
+## Core Responsibilities
 
 The **Payment Service** acts as the **central coordinator** for all transaction workflows.  
 It:
@@ -34,17 +34,7 @@ It:
 
 ---
 
-## 🔌 REST Endpoints
-
-| Endpoint | Method | Description |
-|-----------|---------|-------------|
-| `/transfer` | `POST` | Wallet → Wallet transaction |
-| `/top-up` | `POST` | External Provider → Wallet transaction |
-| `/withdraw` | `POST` | Wallet → External Provider transaction |
-
----
-
-## 🧠 Internal Design
+## Internal Design
 
 To ensure scalability and extensibility, the Payment Service uses the **Strategy Pattern** for payment processing.
 
@@ -59,18 +49,18 @@ Map<PaymentKey, PaymentProcessor> registry;
 ```
 This allows automatic processor selection based on payment source and destination type.
 New payment types can be added by simply registering a new processor — no changes to existing code.
-## 🐇 Asynchronous Flow (Simplified)
+## Asynchronous Flow (Simplified)
 - Payment Service initiates the transaction cycle.
 - Coordinates processing and validation events.
 - Updates wallet and transaction states asynchronously.
 - Sends success/failure notifications at completion.
-## 🚀 Deployment
+## Deployment
 All MicroPay services are:
 - Built with Gradle
 - Containerized using Docker
 - Deployed and tested in Google Cloud Platform (GCP)
 - Designed for Kubernetes orchestration
-## 🧰 Tech Stack
+## Tech Stack
 - Java 21
 - Spring Boot
 - RabbitMQ
@@ -84,7 +74,7 @@ All MicroPay services are:
 ---
 
 <p align="center">
-  <b>Omar Ismailov</b><br>
+  <b>Omar Ismayilov</b><br>
   <i>Software Engineer • Backend & System Design Enthusiast</i><br>
   Building reliable systems with simplicity and architecture in mind.
 </p>
